@@ -17,7 +17,7 @@ int main(void){
     if(access(FIFO_SERV,F_OK) != 0) {
 		printf("O servidor não está a correr...\n");
 		return 1;
-	}
+    }
     msgl.pid = getpid(); //vai buscar o pid do cliente
     sprintf(str,"ccc%d",msgl.pid);
     mkfifo(str,0600); // cria named pipe
@@ -27,7 +27,8 @@ int main(void){
     initscr(); //construtor da ncurses
     raw();/* Line buffering disabled	*/
     
-    
+   
+   
     if(imprime_janela_1()){ // caso pretende fazer login |1|
         do{
             imprime_login_janela1(msgl.nome,msgl.pass);

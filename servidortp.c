@@ -54,7 +54,8 @@ void *fase2_depois_de_logado(){
             i = write(fd_resp,&msgl.login,sizeof(msgl.login));//envia inteiro 0 ou 1 1 se login valido
             close(fd_resp);
             printf("Envia uma resposta - %d (%d bytes)\n",msgl.login,i);
-        }while(msg.comando!="shutdown");
+        }while(strcmp(msg.comando,"shutdown"));
+        printf("sair do fase 2");
         return NULL;
 }
 
@@ -71,8 +72,9 @@ int main(){
     
     REGISTADOS = 0;
     lerficheiro();
+   
     
-    if(msgl.login != 1){
+    if(msgl.login != 1){ // nao pode ser assim !! temos que arranjar outra forma isto nao funciona bem
         pthread_join(thread1,NULL);
     }
     else{
