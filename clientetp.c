@@ -3,13 +3,14 @@
 #include "cliente.h"
 #include "estruturas.h" //SEPARAR EM ESTRUTURAS DO CLIENTE E ESTRUTURAS DO SERVIDOR?????
 
-msglog msgl;
-mensagem msg;
+PEDIDO pedido;
+RESP_SERV resp_serv;
 
 int main(void){
     //VARIAVEIS TESTE -> ALGUMAS A MUDAR PARA AS VARIAVEIS DAS ESTRUTURAS ---
-    char nome[10] = "AAAAAAAAAA";
+    char nome[TAM] = "";
     bool sairlogin=false;
+   
     //----------------------------------------------------------------------
     int fd,i,res=0,fd_resp;
     char str[50];
@@ -17,9 +18,9 @@ int main(void){
     if(access(FIFO_SERV,F_OK) != 0) {
 		printf("O servidor não está a correr...\n");
 		return 1;
-    }
-    msgl.pid = getpid(); //vai buscar o pid do cliente
-    sprintf(str,"ccc%d",msgl.pid);
+	}
+    pedido.pid = getpid(); //vai buscar o pid do cliente
+    sprintf(str,"ccc%d",pedido.pid);
     mkfifo(str,0600); // cria named pipe
     
     fd = open(FIFO_SERV,O_WRONLY);
@@ -27,22 +28,22 @@ int main(void){
     initscr(); //construtor da ncurses
     raw();/* Line buffering disabled	*/
     
-   
-   
+    
     if(imprime_janela_1()){ // caso pretende fazer login |1|
         do{
-            imprime_login_janela1(msgl.nome,msgl.pass);
+            imprime_login_janela1(pedido.str1,pedido.str2);
+            pedido.tipo_pedido = 'l';
             //manda o server o nome e pass
-            i=write(fd,&msgl,sizeof(msgl));
+            i=write(fd,&pedido,sizeof(pedido));
             //printf("Enviei um pedido...(%d bytes)\n",i);
             
             //recebe se o login foi valido ou nao
             fd_resp = open(str,O_RDONLY);
-            i = read(fd_resp, &res, sizeof(res));
+            i = read(fd_resp, &resp_serv, sizeof(resp_serv));
             close(fd_resp);
             //printf("Recebi uma resposta... RESULTADO = %d (%d bytes)\n",res,i);
             
-            if (res == 0){//  se entrar que dizer que o login nao foi valido
+            if (resp_serv.resposta == 0){//  se entrar que dizer que o login nao foi valido
                if(!imprime_login_incorreto()){
                    sairlogin = true;
                }
@@ -52,22 +53,22 @@ int main(void){
             }
         }while(sairlogin==false);
        
-        if(res==1){
-            msg.pid = getpid();
+        if(resp_serv.resposta == 1){
+            pedido.pid = getpid();
             do{
                 imprime_janela_espera_de_jogo();
-                imprime_linha_comandos(msg.comando);
+                imprime_linha_comandos(pedido.str1);
                 //manda o comando introduzido
-                i=write(fd,&msg,sizeof(msg));
+                i=write(fd,&pedido,sizeof(pedido));
                 //printf("Enviei um pedido...(%d bytes)\n",i);
 
                 //recebe se o login foi valido ou nao
                 fd_resp = open(str,O_RDONLY);
-                i = read(fd_resp, &res, sizeof(res));
+                i = read(fd_resp, &resp_serv, sizeof(resp_serv));
                 close(fd_resp);
                 //printf("Recebi uma resposta... RESULTADO = %d (%d bytes)\n",res,i);
 
-            }while(strcmp(msg.comando,"sair"));
+            }while(strcmp(pedido.str1,"sair"));
         }
     }
    //caso pretenda sair |2|

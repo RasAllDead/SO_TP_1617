@@ -12,10 +12,9 @@
 #define FIFO_SERV "sss"
 
 #define LENG 5
-#define TAM_MAX_USERNAME 10
-#define TAM_MAX_PASSWORD 10
+#define TAM 20
+#define TAM_Jog_Logados 20
 #define TAM_MAX_MENSAGEM 500
-#define TAM_MAX_COMANDO 20
 
 int REGISTADOS=0;
 
@@ -26,7 +25,7 @@ int REGISTADOS=0;
 
 typedef struct jogador_em_jogo jogador;
 struct jogador_em_jogo{
-    char nome[TAM_MAX_USERNAME];        //Username do utilizador
+    char nome[TAM];        //Username do utilizador
     int pid;                            //pid do utilizador que controla o jogador em causa
     int posicao;                        //posicao do jogador em campo
     char equipa;                        //'V' para equipa vermelha 'A' para equipa azul
@@ -37,7 +36,7 @@ struct jogador_em_jogo{
 };
 
 struct utilizador{
-    char nome[TAM_MAX_USERNAME];        //Username do utilizador
+    char nome[TAM];        //Username do utilizador
     int pid;                            //pid do utilizador
 };
 
@@ -49,7 +48,7 @@ struct bola {
 
 struct golos{
     int tempo;                         //registo do tempo em que foi parcado o golo
-    char nome[TAM_MAX_USERNAME];        //Username do utilizador
+    char nome[TAM];        //Username do utilizador
     char equipa;                        //'V' para equipa vermelha 'A' para equipa azul
 };
 
@@ -72,19 +71,22 @@ struct atualiza_dados_jogadores{
     int y;                              //coordenada y da sua posicao
 };
 
-typedef struct mensagem_login msglog;
-struct mensagem_login{
-    char nome[TAM_MAX_USERNAME];        //Username do utilizador
-    char pass[TAM_MAX_PASSWORD];        // palavra pass do utilizador
-    int login;                      //se for 0 ainda nao fez login se for 1 login aceite
+typedef struct pedido{
     int pid;                            //pid do utilizador
-};
+    char tipo_pedido;   
+    char str1[TAM];        //Ler o username ou um comando
+    char str2[TAM];        //Ler a pass ou uma tecla
+}PEDIDO;
 
-typedef struct {
-    int pid;                            //pid do utilizador
-    char tecla;                         //tecla clicada
-    char comando[TAM_MAX_COMANDO];      //comando introduzido
-}mensagem;
+typedef struct resposta_servidor{
+int resposta;
+}RESP_SERV;
+
+//typedef struct {
+    //int pid;                            //pid do utilizador
+   // char tecla;                         //tecla clicada
+   // char comando[TAM_MAX_COMANDO];      //comando introduzido
+//}mensagem;
 
 struct resposta{
     //array de atualizadados
@@ -96,8 +98,8 @@ struct resposta{
 
 typedef struct 
 {
-	char username[30];
-	char password[15];
+	char username[TAM];
+	char password[TAM];
         int pid;
 }Ler_do_Fich;
 
