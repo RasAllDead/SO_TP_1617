@@ -9,6 +9,7 @@
 #include <signal.h>
 #include <pthread.h>
 #include <ncurses.h>
+#include <time.h>
 
 
 void lerficheiro(){
@@ -24,9 +25,3 @@ void lerficheiro(){
 	fclose(f);
 }
 
-void reinicia_pids_de_utilizadores(){
-int i;
-for(i=0;i<REGISTADOS;i++){
-Users[i].pid = -1;
-}
-}

@@ -9,11 +9,12 @@
 #include <pthread.h>
 #include <ncurses.h>
 
-#define FIFO_SERV "sss"
+#define FIFO_SERV "fservidor"
 
 #define LENG 5
 #define TAM 20
-#define TAM_Jog_Logados 20
+#define TAM_Jog_Logados 5
+#define TAM_EQUIPAS 9
 #define TAM_MAX_MENSAGEM 500
 
 int REGISTADOS=0;
@@ -22,29 +23,27 @@ int REGISTADOS=0;
 //#define CLIENT_FIFO "/tmp/resp_%dfifo"
 //#define SERV_FIFO "/tmp/fifo_serv"
 
+typedef struct coordenadas{
+int x;
+int y;
+}POSICAO;
 
-typedef struct jogador_em_jogo jogador;
-struct jogador_em_jogo{
-    char nome[TAM];        //Username do utilizador
+typedef struct jogador_em_jogo{
     int pid;                            //pid do utilizador que controla o jogador em causa
-    int posicao;                        //posicao do jogador em campo
-    char equipa;                        //'V' para equipa vermelha 'A' para equipa azul
-    int X;                              //coordenada X da posiçao do jogador
-    int Y;                              //coordenada Y da posiçao do jogador
-    bool tem_bola;                      //var para saber se o jugador esta com a posse da bola
+    POSICAO pos;                         //coordenada X eY da posiçao do jogado
+}JOGADOR;
 
-};
+
 
 struct utilizador{
     char nome[TAM];        //Username do utilizador
     int pid;                            //pid do utilizador
 };
 
-struct bola {
-    int x;                              //cordenada x da posicao da bola
-    int y;                              //coordenada y da posicao da bola
+typedef struct bola {
+    POSICAO pos;                              //cordenada x e y da posicao da bola
     int pid_jogador_com_bola;           //pid do jogador que tem a posse da bola
-};
+}BOLA;
 
 struct golos{
     int tempo;                         //registo do tempo em que foi parcado o golo
@@ -76,6 +75,7 @@ typedef struct pedido{
     char tipo_pedido;   
     char str1[TAM];        //Ler o username ou um comando
     char str2[TAM];        //Ler a pass ou uma tecla
+    int estado_jogo;       //saber se ja ha um jogo a decorrer ou nao (nos casos em que o cliente entra depois de ja ter começado um jogo) 
 }PEDIDO;
 
 typedef struct resposta_servidor{
@@ -102,7 +102,6 @@ typedef struct
 	char password[TAM];
         int pid;
 }Ler_do_Fich;
-
 
 
 Ler_do_Fich Users[LENG];

@@ -39,7 +39,7 @@ void imprime_moldura () {
     
 }
 
-bool imprime_janela_1(){ // Janela inicial Login? ou Sair?
+bool imprime_janela_1(char* comando){ // Janela inicial Login? ou Sair?
     int i=0,Y=7,X=24;
     char opcao = 'x';
     bool logar_ou_sair;
@@ -87,6 +87,7 @@ bool imprime_janela_1(){ // Janela inicial Login? ou Sair?
         logar_ou_sair = true;
     }
     else{
+        strcpy(comando,"sair");
         logar_ou_sair = false;
     }
     
@@ -261,7 +262,6 @@ void imprime_resultado(int equipa_vermelha, int equipa_azul){
 void imprime_linha_comandos (char *comando) {
     int i=0, X=4, Y=28; // (Y,X) iniciais 
     int largura = TAMX-6,altura = 4;
-    char str[50];
     char chmoldura = '*';
     
     move(Y,X);
@@ -270,9 +270,9 @@ void imprime_linha_comandos (char *comando) {
     
     move(Y+2,X+4);
     printw(">> ");
-    scanw("%[^\n]s%",str);
-    strcpy(comando,str);
-    
+strcpy(comando,"");
+   // scanw("%s",comando);
+    scanw(" %[^\n]s", comando);
     move(Y+2,X+7);
     printw("                                                               ");
     move(Y+2,X+7);
@@ -280,7 +280,7 @@ void imprime_linha_comandos (char *comando) {
     
 }
 
-bool imprime_login_incorreto(){
+bool imprime_login_incorreto(char * comando){
   int i=0,j, X=4, Y=17,deslocamentox=25; // (Y,X) iniciais 
     char chmoldura = ' ';
     bool tentar_ou_sair;
@@ -309,6 +309,7 @@ bool imprime_login_incorreto(){
         tentar_ou_sair = true;
     }
     else{
+        strcpy(comando,"sair");
         tentar_ou_sair = false;
     }
     
@@ -332,12 +333,12 @@ void imprime_login_janela1(char *username,char *password){
 
     move(Y+3,X+deslocamentox);
     printw("USERNAME: ");
-    scanw("%[^\n]s%",username);
+    scanw(" %[^\n]s%",username);
    
     
     move(Y+5,X+deslocamentox);
     printw("PASSWORD: ");
-    scanw("%[^\n]s%",password);
+    scanw(" %[^\n]s%",password);
     sleep(0.5);
     
 
@@ -534,6 +535,7 @@ void admin_imprime_janela_sem_jogos_a_decorrer(){
     move(Y+17,X+12);
     printw("[DIGITAR 'AJUDA' PARA VER LISTA DE COMANDOS]");
     
+fflush(stdout);
    // imprime_linha_comandos();
      
 }
